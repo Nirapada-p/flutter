@@ -10,11 +10,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'My Profile',
+      title: 'โปรไฟล์ของฉัน',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 53, 115, 221),
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
         useMaterial3: true,
       ),
       home: const ProfilePage(),
@@ -29,8 +27,8 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
-        backgroundColor: const Color.fromARGB(255, 128, 22, 22),
+        title: const Text('โปรไฟล์ของฉัน'),
+        backgroundColor: Colors.orange,
         foregroundColor: Colors.white,
       ),
       body: Padding(
@@ -43,7 +41,7 @@ class ProfilePage extends StatelessWidget {
             // รูปโปรไฟล์
             const CircleAvatar(
               radius: 60,
-              backgroundColor: Color.fromARGB(255, 152, 251, 91),
+              backgroundColor: Colors.orange,
               child: Icon(Icons.person, size: 60, color: Colors.white),
             ),
 
@@ -83,14 +81,14 @@ class ProfilePage extends StatelessWidget {
                     _buildInfoRow(
                       Icons.star,
                       'เป้าหมาย',
-                      ',มีเงินร้อยล้านจากการทำงาน',
+                      'มีเงินร้อยล้านจากการทำงาน',
                     ),
 
                     const Divider(),
-                    _buildInfoRow(Icons.star, 'email', ',67030118@kmitl.ac.th'),
+                    _buildInfoRow(Icons.star, 'email', '67030118@kmitl.ac.th'),
 
                     const Divider(),
-                    _buildInfoRow(Icons.star, 'phone', ',0923620828'),
+                    _buildInfoRow(Icons.star, 'phone', '0923620828'),
                   ],
                 ),
               ),
@@ -107,7 +105,7 @@ class ProfilePage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          Icon(icon, color: const Color.fromARGB(255, 197, 11, 160)),
+          Icon(icon, color: Colors.orange),
           const SizedBox(width: 12),
           Text('$label: ', style: const TextStyle(fontWeight: FontWeight.bold)),
           Expanded(child: Text(value)),
