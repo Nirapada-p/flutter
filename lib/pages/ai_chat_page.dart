@@ -87,58 +87,47 @@ class _AiChatPageState extends State<AiChatPage> {
     final isUser = message["role"] == "user";
     final text = message["text"] ?? "";
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-      child: Row(
-        mainAxisAlignment: isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (!isUser) ...[
-            CircleAvatar(
-              radius: 18,
-              backgroundColor: Colors.blue.shade100,
-              child: Icon(Icons.smart_toy, size: 18, color: Colors.blue.shade800),
-            ),
-            const SizedBox(width: 8),
-          ],
-          Flexible(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                color: isUser ? Colors.blue.shade600 : Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(18),
-                  topRight: const Radius.circular(18),
-                  bottomLeft: isUser ? const Radius.circular(18) : const Radius.circular(0),
-                  bottomRight: isUser ? const Radius.circular(0) : const Radius.circular(18),
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 6,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
+    return Align(
+      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.78,
+          ),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            decoration: BoxDecoration(
+              color: isUser ? Colors.orange : Colors.white,
+              border: isUser
+                  ? null
+                  : Border.all(color: const Color(0xFFEBEBEB), width: 1),
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(22),
+                topRight: const Radius.circular(22),
+                bottomLeft: isUser ? const Radius.circular(22) : const Radius.circular(0),
+                bottomRight: isUser ? const Radius.circular(0) : const Radius.circular(22),
               ),
-              child: Text(
-                text,
-                style: TextStyle(
-                  color: isUser ? Colors.white : Colors.black87,
-                  fontSize: 15,
-                  height: 1.4,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: isUser ? 0.06 : 0.03),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
                 ),
+              ],
+            ),
+            child: Text(
+              text,
+              style: TextStyle(
+                color: isUser ? Colors.white : Colors.black87,
+                fontSize: 15,
+                fontWeight: isUser ? FontWeight.w500 : FontWeight.w400,
+                height: 1.5,
+                letterSpacing: 0.2,
               ),
             ),
           ),
-          if (isUser) ...[
-            const SizedBox(width: 8),
-            CircleAvatar(
-              radius: 18,
-              backgroundColor: Colors.orange.shade100,
-              child: Icon(Icons.person, size: 18, color: Colors.orange.shade800),
-            ),
-          ],
-        ],
+        ),
       ),
     );
   }
@@ -146,171 +135,248 @@ class _AiChatPageState extends State<AiChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: const Color(0xFFF8F9FB),
       appBar: AppBar(
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        centerTitle: true,
+        title: const Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              "Gemini AI Chat",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            Icon(
+              Icons.auto_awesome,
+              color: Colors.orange,
+              size: 20,
             ),
+            SizedBox(width: 8),
             Text(
-              "Powered by Gemini 2.5 Flash",
-              style: TextStyle(fontSize: 12, color: Colors.white70),
+              "Gemini AI",
+              style: TextStyle(
+                color: Colors.black87,
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
             ),
           ],
         ),
-        backgroundColor: Colors.blue.shade700,
-        foregroundColor: Colors.white,
-        elevation: 2,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: _messages.isEmpty
-                ? Center(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.forum_outlined,
-                            size: 72,
-                            color: Colors.blue.shade200,
-                          ),
-                          const SizedBox(height: 16),
-                          const Text(
-                            "👋 ยินดีต้อนรับสู่ Gemini Chat!",
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "ถามอะไรฉันก็ได้ ฉันพร้อมที่จะช่วยเหลือคุณเสมอ",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey.shade600,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    itemCount: _messages.length,
-                    itemBuilder: (context, index) {
-                      return _buildMessage(_messages[index]);
-                    },
-                  ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1.0),
+          child: Divider(
+            height: 1,
+            color: Colors.grey.shade200,
+            thickness: 1,
           ),
-          if (_isLoading)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 18,
-                      backgroundColor: Colors.blue.shade100,
-                      child: Icon(Icons.smart_toy, size: 18, color: Colors.blue.shade800),
-                    ),
-                    const SizedBox(width: 8),
-                    Container(
+        ),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: _messages.isEmpty
+                  ? Center(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 48,
+                              backgroundColor: Colors.orange.shade50,
+                              child: const Icon(
+                                Icons.auto_awesome,
+                                size: 48,
+                                color: Colors.orange,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            const Text(
+                              "Hello Gemini",
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black87,
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              "Start a conversation with AI",
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.grey,
+                                letterSpacing: 0.2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      reverse: true,
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: _messages.length,
+                      itemBuilder: (context, index) {
+                        final reversedIndex = _messages.length - 1 - index;
+                        return TweenAnimationBuilder<double>(
+                          key: ValueKey(reversedIndex),
+                          tween: Tween<double>(begin: 0.0, end: 1.0),
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeOutCubic,
+                          builder: (context, value, child) {
+                            return Opacity(
+                              opacity: value,
+                              child: Transform.translate(
+                                offset: Offset(0.0, 20.0 * (1.0 - value)),
+                                child: child,
+                              ),
+                            );
+                          },
+                          child: _buildMessage(_messages[reversedIndex]),
+                        );
+                      },
+                    ),
+            ),
+            if (_isLoading)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.78,
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                       decoration: BoxDecoration(
                         color: Colors.white,
+                        border: Border.all(color: const Color(0xFFEBEBEB), width: 1),
                         borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(18),
-                          topRight: Radius.circular(18),
-                          bottomRight: Radius.circular(18),
+                          topLeft: Radius.circular(22),
+                          topRight: Radius.circular(22),
+                          bottomRight: Radius.circular(22),
                           bottomLeft: Radius.circular(0),
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.06),
-                            blurRadius: 6,
-                            offset: const Offset(0, 3),
+                            color: Colors.black.withValues(alpha: 0.03),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text(
-                            "Gemini กำลังพิมพ์",
-                            style: TextStyle(color: Colors.black54, fontSize: 14),
-                          ),
-                          const SizedBox(width: 8),
-                          SizedBox(
-                            width: 12,
-                            height: 12,
+                          const SizedBox(
+                            width: 14,
+                            height: 14,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: Colors.blue.shade700,
+                              color: Colors.orange,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            "Gemini is thinking...",
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              letterSpacing: 0.2,
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, -3),
-                ),
-              ],
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: SafeArea(
+            Container(
+              margin: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(32),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, -2),
+                  ),
+                ],
+              ),
+              padding: const EdgeInsets.all(8),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: TextField(
-                        controller: _controller,
-                        decoration: const InputDecoration(
-                          hintText: "ถามข้อมูลกับ Gemini...",
-                          hintStyle: TextStyle(color: Colors.grey),
-                          border: InputBorder.none,
+                    child: TextField(
+                      controller: _controller,
+                      maxLines: null,
+                      minLines: 1,
+                      textInputAction: TextInputAction.send,
+                      onSubmitted: (_) => _sendMessage(),
+                      decoration: InputDecoration(
+                        hintText: "Ask Gemini...",
+                        hintStyle: const TextStyle(color: Colors.grey, fontSize: 15),
+                        filled: true,
+                        fillColor: const Color(0xFFF5F5F5),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
                         ),
-                        onSubmitted: (_) => _sendMessage(),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: const BorderSide(
+                            color: Colors.orange,
+                            width: 1.5,
+                          ),
+                        ),
                       ),
                     ),
                   ),
                   const SizedBox(width: 8),
-                  InkWell(
-                    onTap: _isLoading ? null : _sendMessage,
-                    borderRadius: BorderRadius.circular(24),
-                    child: CircleAvatar(
-                      radius: 22,
-                      backgroundColor: _isLoading ? Colors.grey : Colors.blue.shade700,
-                      child: const Icon(Icons.send, color: Colors.white, size: 20),
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: const LinearGradient(
+                        colors: [Colors.orange, Colors.deepOrangeAccent],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.orange.withValues(alpha: 0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: _isLoading ? null : _sendMessage,
+                        customBorder: const CircleBorder(),
+                        child: const Padding(
+                          padding: EdgeInsets.all(12),
+                          child: Icon(
+                            Icons.send_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
