@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'pages/ai_chat_page.dart';
 
-// เพิ่มฟังก์ชัน main() เพื่อเป็นจุดเริ่มต้นของแอปพลิเคชัน
 void main() {
   runApp(const MyApp());
 }
@@ -12,119 +12,136 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Weather App',
-      home: Scaffold(
-        backgroundColor:
-            Colors.grey.shade100, // สีพื้นหลังแอปเพื่อขับให้ Card เด่นขึ้น
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            // เรียกใช้งาน WeatherCard ตัวใหม่ของคุณ พร้อมส่งค่าตัวอย่าง
-            child: WeatherCard(
-              city: 'Bangkok',
-              temperature: 32.5,
-              condition: 'sunny',
-              humidity: 65,
-            ),
+      title: 'โปรไฟล์ของฉัน',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
+        useMaterial3: true,
+      ),
+      home: const ProfilePage(),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('โปรไฟล์ของฉัน'),
+        backgroundColor: Colors.orange,
+        foregroundColor: Colors.white,
+      ),
+      body: SingleChildScrollView(
+        // เพิ่มส่วนนี้เพื่อรองรับกรณีหน้าจอมือถือเล็ก ป้องกัน UI ล้น (Overflow)
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 20),
+
+              // รูปโปรไฟล์
+              const CircleAvatar(
+                radius: 60,
+                backgroundColor: Colors.orange,
+                child: Icon(Icons.person, size: 60, color: Colors.white),
+              ),
+
+              const SizedBox(height: 16),
+
+              // ชื่อของคุณ
+              const Text(
+                'Nirapada Khattiya',
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+
+              const SizedBox(height: 8),
+
+              // รหัสนักศึกษาของคุณ
+              const Text(
+                'รหัสนักศึกษา: 67030118',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Card ข้อมูล
+              Card(
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      _buildInfoRow(
+                        Icons.school,
+                        'คณะ',
+                        'ครุศาสตร์อุตสาหกรรมและเทคโนโลยี',
+                      ),
+                      const Divider(),
+                      _buildInfoRow(Icons.code, 'วิชาที่ชอบ', 'IT Support'),
+                      const Divider(),
+                      _buildInfoRow(
+                        Icons.star,
+                        'เป้าหมาย',
+                        'มีเงินร้อยล้านจากการทำงาน',
+                      ),
+                      const Divider(),
+                      _buildInfoRow(
+                        Icons.email,
+                        'email',
+                        '67030118@kmitl.ac.th',
+                      ),
+                      const Divider(),
+                      _buildInfoRow(Icons.phone, 'phone', '0923620828'),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // ปุ่มทดลอง AI Chat สำหรับกดข้ามหน้าไป pages/ai_chat_page.dart
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AiChatPage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                ),
+                icon: const Icon(Icons.smart_toy),
+                label: const Text(
+                  'ทดลอง AI Chat',
+                  style: TextStyle(fontSize: 16),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
-}
 
-// ==========================================
-// คลาส WeatherCard ของคุณ (UI เหมือนเดิม 100% ห้ามเปลี่ยน)
-// ==========================================
-class WeatherCard extends StatelessWidget {
-  final String city;
-  final double temperature;
-  final String condition;
-  final int humidity;
-
-  const WeatherCard({
-    super.key,
-    required this.city,
-    required this.temperature,
-    required this.condition,
-    required this.humidity,
-  });
-
-  IconData _getWeatherIcon() {
-    switch (condition.toLowerCase()) {
-      case 'sunny':
-        return Icons.wb_sunny;
-      case 'cloudy':
-        return Icons.cloud;
-      case 'rainy':
-        return Icons.water_drop;
-      default:
-        return Icons.wb_cloudy_outlined;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 8,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Container(
-        width: 300,
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          gradient: LinearGradient(
-            colors: [Colors.blue.shade800, Colors.blue.shade400],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              city,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.2,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Icon(_getWeatherIcon(), size: 80, color: Colors.white),
-            const SizedBox(height: 20),
-            Text(
-              '${temperature.toStringAsFixed(1)}°C',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 64,
-                fontWeight: FontWeight.w900,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              condition.toUpperCase(),
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const Divider(color: Colors.white24, height: 30, thickness: 1),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.water_drop, color: Colors.white, size: 20),
-                const SizedBox(width: 8),
-                Text(
-                  'Humidity: $humidity%',
-                  style: const TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ],
-            ),
-          ],
-        ),
+  // Helper Method สำหรับสร้างแถวข้อมูล (ย้ายมาอยู่นอกสุดของคลาสให้ถูกต้อง)
+  Widget _buildInfoRow(IconData icon, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Icon(icon, color: Colors.orange),
+          const SizedBox(width: 12),
+          Text('$label: ', style: const TextStyle(fontWeight: FontWeight.bold)),
+          Expanded(child: Text(value)),
+        ],
       ),
     );
   }
