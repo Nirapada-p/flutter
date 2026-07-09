@@ -53,4 +53,3 @@ build/
 .env
 *.env
 lib/config/api_keys.dart
-lib/config/api_config.dart
