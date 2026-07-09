@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// เพิ่มฟังก์ชัน main() เพื่อเป็นจุดเริ่มต้นของแอปพลิเคชัน
 void main() {
   runApp(const MyApp());
 }
@@ -12,23 +13,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Weather App',
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.blue, // กำหนดโทนสีหลักของแอป
-      ),
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Weather Forecast'),
-          centerTitle: true,
-        ),
-        body: const Center(
+        backgroundColor:
+            Colors.grey.shade100, // สีพื้นหลังแอปเพื่อขับให้ Card เด่นขึ้น
+        body: Center(
           child: Padding(
-            padding: EdgeInsets.all(16.0),
-            // เรียกใช้งาน WeatherCard พร้อมส่งค่าตัวอย่าง (UI เหมือนเดิม 100%)
+            padding: const EdgeInsets.all(16.0),
+            // เรียกใช้งาน WeatherCard ตัวใหม่ของคุณ พร้อมส่งค่าตัวอย่าง
             child: WeatherCard(
-              cityName: 'Bangkok',
+              city: 'Bangkok',
               temperature: 32.5,
-              weatherCondition: 'sunny',
+              condition: 'sunny',
               humidity: 65,
             ),
           ),
@@ -39,88 +34,92 @@ class MyApp extends StatelessWidget {
 }
 
 // ==========================================
-// WeatherCardชิ้นเดิมของคุณ (UI เหมือนเดิมทุกประการ)
+// คลาส WeatherCard ของคุณ (UI เหมือนเดิม 100% ห้ามเปลี่ยน)
 // ==========================================
 class WeatherCard extends StatelessWidget {
-  final String cityName;
+  final String city;
   final double temperature;
-  final String weatherCondition; // 'sunny', 'cloudy', 'rainy'
+  final String condition;
   final int humidity;
 
-  // Constructor รับค่าผ่าน Parameters
   const WeatherCard({
     super.key,
-    required this.cityName,
+    required this.city,
     required this.temperature,
-    required this.weatherCondition,
+    required this.condition,
     required this.humidity,
   });
 
-  // ฟังก์ชันเลือกไอคอนตามสภาพอากาศ
   IconData _getWeatherIcon() {
-    switch (weatherCondition.toLowerCase()) {
+    switch (condition.toLowerCase()) {
       case 'sunny':
-        return Icons.wb_sunny_rounded;
+        return Icons.wb_sunny;
       case 'cloudy':
-        return Icons.cloud_rounded;
+        return Icons.cloud;
       case 'rainy':
-        return Icons.umbrella_rounded;
+        return Icons.water_drop;
       default:
-        return Icons.help_outline_rounded;
+        return Icons.wb_cloudy_outlined;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 0,
-      // ใช้ colorScheme สำหรับ Material 3 (สีพื้นหลัง Card แบบอ่อน)
-      color: Theme.of(context).colorScheme.surfaceVariant,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
+      elevation: 8,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Container(
+        width: 300,
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            colors: [Colors.blue.shade800, Colors.blue.shade400],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // ชื่อเมือง
             Text(
-              cityName,
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              city,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+              ),
             ),
-            const SizedBox(height: 16),
-
-            // ไอคอนสภาพอากาศและอุณหภูมิ
+            const SizedBox(height: 20),
+            Icon(_getWeatherIcon(), size: 80, color: Colors.white),
+            const SizedBox(height: 20),
+            Text(
+              '${temperature.toStringAsFixed(1)}°C',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 64,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              condition.toUpperCase(),
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const Divider(color: Colors.white24, height: 30, thickness: 1),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  _getWeatherIcon(),
-                  size: 64,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: 20),
-                Text(
-                  '${temperature.toStringAsFixed(1)}°',
-                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-
-            // ความชื้น
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.water_drop_outlined, size: 18),
-                const SizedBox(width: 4),
+                const Icon(Icons.water_drop, color: Colors.white, size: 20),
+                const SizedBox(width: 8),
                 Text(
                   'Humidity: $humidity%',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ],
             ),
